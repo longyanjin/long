@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>楼层导航</title>
+	<style type="text/css">
+		.header, .nav, .main, .footer {
+			width: 800px;
+			margin:auto;
+		}
+		.header {
+			height : 1000px;
+			background: #666;
+		}
+		.nav {
+			height: 500px;
+			background: #ccc;
+		}
+		.floor {
+			height:600px;
+		}
+		.footer {
+			height:300px;
+			background: #666;
+		}
+		.menu {
+			width: 60px;
+			list-style: none;
+			background: #fff;
+			position: fixed;
+			bottom: 100px;
+			left:50px;
+			display: none;
+		}
+		.menu li {
+			height:50px;
+			line-height: 50px;
+			text-align: center;
+			border-bottom: 1px solid #666;
+			cursor: pointer;
+			position: relative;
+		}
+		.menu li span {
+			display: none;
+			width:60px;
+			height: 50px;
+			line-height: 50px;
+			position: absolute;
+			top:0;
+			left:0;
+			background: #f00;
+		}
+	</style>
+</head>
+<body>
+	<div class="header">头部</div>
+	<div class="nav">导航</div>
+	<div class="main">
+		<div class="floor" style="background: #f00">服饰</div>
+		<div class="floor" style="background: #ff0">家电</div>
+		<div class="floor" style="background: #ddd">数码</div>
+		<div class="floor" style="background: #f0f">运动</div>
+		<div class="floor" style="background: #0f0">零食</div>
+		<div class="floor" style="background: #0ff">图书</div>
+	</div>
+	<div class="footer"></div>
+
+	<ul class="menu">
+		<li>1L<span style="display: block;">服饰</span></li>
+		<li>2L<span>家电</span></li>
+		<li>3L<span>数码</span></li>
+		<li>4L<span>运动</span></li>
+		<li>5L<span>零食</span></li>
+		<li>6L<span>图书</span></li>
+		<li>TOP</li>
+	</ul>
+
+	<script src="lib/jquery/jquery-1.12.4.min.js"></script>
+	<script>
+		$(function(){
+			// 获取窗口高度
+			var winHeight = $(window).height();
+			// 标记，是否为点击菜单后的滚动    true:点击菜单的滚动 false:鼠标滚动
+			var isAuto = false; 
+
+			// 处理窗口的滚动事件
+			// $(window).scroll();
+			$(window).on("scroll", function(){
+				if (!isAuto){
+					// 获取滚动高度
+					var _scrollTop = $(window).scrollTop();
+
+					// 获取1L服饰楼层之前布局结构的高度
+					var _top = $(".floor").offset().top;
+
+					// 判断
+					if (_scrollTop >= _top - winHeight / 2) {
+						$(".menu").stop().fadeIn(200);
+					} else {
+						$(".menu").stop().fadeOut(200);
+					}
+
+					// 处理菜单中楼层汉字的显示隐藏
+					$(".floor").each(function(index, element){
+						// 获取当前遍历到楼层前所有布局的高度
+						var _top = $(this).offset().top;
+						// 判断是否滚动超过窗口高度一半位置
+						if (_scrollTop >= _top - winHeight / 2) {
+							// 将当前楼层对应菜单中中文显示出来
+							$(".menu li").eq(index).addClass("current").children("span").show()
+										 .end()
+										 .siblings().removeClass("current").children("span").hide();
+						}
+					});
+				}
+			});
+
+			// 处理菜单中菜单项的点击事件
+			$(".menu").on("click", "li:not(:last)", function(){
+				// 修改标记
+				isAuto = true;
+				// 将当前点击li下的span显示，其它隐藏
+				$(this).addClass("current").children("span").show().end()
+					   .siblings().removeClass("current").children("span").hide();
+				// 获取当前点击菜单项的索引
+				var _index = $(this).index();
+				// 计算对应楼层布局结构前的高度
+				var _top = $(".floor").eq(_index).offset().top;
+				// 运动动画效果
+				$("html,body").stop().animate({scrollTop:_top}, function(){
+					isAuto = false;
+				});
+			});
+
+			$(".menu li").hover(function(){
+				$(this).children("span").show();
+			}, function(){
+				if (!$(this).is(".current"))
+					$(this).children("span").hide();
+			});
+
+			$(".menu li:last").click(function(){
+				// $("html, body").stop().animate({scrollTop:0});
+				$(window).scrollTop(0);
+			});
+		});
+	</script>
+</body>
+</html>

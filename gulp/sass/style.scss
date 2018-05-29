@@ -1,0 +1,75 @@
+$w : 800px;
+$bgcolor : #fac382;
+$b : 1px solid #ccc;
+
+.box {
+	width : $w;
+	height : 300px;
+	background : $bgcolor;
+	div {
+		width : $w / 2;
+		.link {
+			&:hover {
+				color : #666;
+			}
+			&:visited {
+				color : #ccc;
+			}
+		}
+		background: {
+			image : url ("images/xxx.jpg");
+			color : $bgcolor;
+			repeat : no-repeat;
+		}
+	}
+	span {
+		width : $w / 3;
+		display : block;
+		height : $w / 5;
+	}
+}
+
+.box2 {
+	width: $w;
+	border : $b;
+}
+
+@mixin _block($h:300px, $we:bold) {
+	width: $w / 2;
+	height : $h;
+	background : $bgcolor;
+	font-size : 14px;
+	font-weight  :$we;
+}
+
+.box3 {
+	@include _block;
+	@extend .box2;
+}
+
+.box4 {
+	@extend .box3;
+	display : none;
+}
+
+.box5 {
+	@if $w/3>=500px {
+		border: 1px solid #f00;
+	} @else {
+		border: 5px solid #ccc;
+	}
+	height : 300px;
+}
+
+@for $i from 1 through 10 {
+	.p#{$i} {
+		padding : #{$i}px;
+	}
+}
+
+.container {
+	width: 200px;
+	height: 500px;
+	border:1px solid;
+	background: #000;
+} 
